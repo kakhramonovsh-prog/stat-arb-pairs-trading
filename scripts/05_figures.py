@@ -47,13 +47,17 @@ def fig_equity_curves() -> None:
                                ("In-sample 2011-2021", "Hold-out 2022-2026")):
         static = _equity(config.TABLES / f"daily_{span}.csv")
         kalman = _equity(config.TABLES / f"daily_{span}_kalman.csv")
+        crosssec = _equity(config.TABLES / f"daily_{span}_crosssec.csv")
 
         if static is not None:
             ax.plot(static.index, (static - 1) * 100, lw=1.3,
-                    color="#c0392b", label="Static beta")
+                    color="#c0392b", label="Pairs, static beta")
         if kalman is not None:
             ax.plot(kalman.index, (kalman - 1) * 100, lw=1.3,
-                    color="#2c3e50", label="Kalman dynamic beta")
+                    color="#2c3e50", label="Pairs, Kalman beta")
+        if crosssec is not None:
+            ax.plot(crosssec.index, (crosssec - 1) * 100, lw=1.3,
+                    color="#8e44ad", label="Cross-sectional (A&L)")
 
         ax.axhline(0, color="black", lw=0.8, ls="--", alpha=0.6)
         ax.set_title(title)

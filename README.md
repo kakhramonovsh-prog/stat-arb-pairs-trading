@@ -88,6 +88,13 @@ significant span — and +0.82% out-of-sample (*t* = 0.67). Costs of ~3.2%
 annualised make both spans lose money net. **H2 rejected** on the out-of-sample
 criterion, and reported as such.
 
+Because costs scale linearly with the assumed rate, the data imply a
+**breakeven cost of 2.1 bps per side in-sample and 1.3 bps out-of-sample**
+(against the 5 bps assumed here). The strategy is only viable for an executor
+whose all-in costs sit near the institutional floor — a quantitative statement
+of *who* can still trade this anomaly, and why it persists: the marginal
+arbitrageur able to harvest it is already in it.
+
 ![Look-ahead bias](results/figures/02_lookahead_bias.png)
 
 ---
@@ -164,8 +171,12 @@ python scripts/04_diagnostics.py
 python scripts/05_figures.py
 ```
 
-Add `--kalman` to step 3 for the pre-registered extension, and `--span oos` for
-the hold-out.
+```bash
+python scripts/06_crosssec.py --span is
+```
+
+Add `--kalman` to step 3 for the first pre-registered extension, and
+`--span oos` anywhere for the hold-out.
 
 ---
 
