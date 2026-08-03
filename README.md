@@ -1,18 +1,42 @@
-# Statistical Arbitrage via Cointegration: A Null Result
+# Anatomy of a Backtest: Look-Ahead Bias and the Economics of Statistical Arbitrage
 
-A rigorously specified pairs-trading study on US large-cap equities,
-2010–2026. The headline finding is that the strategy **does not work**, and
-that the profitable results common in the applied literature are reproducible
-on demand by introducing a single, specific normalisation error.
+Three statistical arbitrage specifications — bilateral cointegration pairs, a
+Kalman-filter dynamic hedge ratio, and Avellaneda-Lee cross-sectional PCA
+residual reversion — evaluated on 184 US large caps over 2010–2026 under a
+strict formation/trading discipline with a once-only hold-out.
+
+Two headline findings:
+
+**The look-ahead error common in pairs-trading backtests is worth +6.8
+percentage points of annualised return and 3.9 Sharpe points.** Standardising
+the spread by its own trading-window moments — one line of code — turns a
+loss-making strategy into an apparent Sharpe 3.15 with an 88.8% win rate. The
+bias is isolated and measured by running the same engine with the error
+deliberately switched on.
+
+**Mean reversion still exists in US large caps; it is just smaller than the
+cost of trading it.** Each methodological refinement recovers more genuine
+gross signal — and none of it pays the bill:
+
+| Specification | Gross IS (2011–21) | Gross OOS (2022–26) | Net IS | Verdict |
+|---|---|---|---|---|
+| Bilateral pairs, static β | +0.08% | −1.66% | −3.08% | no signal |
+| + Kalman dynamic β *(pre-registered)* | +0.89% | +0.40% | +0.24% | weak, insignificant |
+| Cross-sectional PCA residuals *(pre-registered)* | **+1.31% (t = 2.33)** | +0.82% (t = 0.67) | −2.16% | **real signal, uneconomic** |
+
+The cross-sectional specification is the only one to reach statistical
+significance in any span, with a win rate stable at 56.9% / 56.5% across
+24,000+ round trips — a genuine, measurable anomaly earning ~5 bps per
+9.5-day trade against ~20 bps of round-trip cost. That is what a mature,
+crowded anomaly looks like from the outside.
 
 ---
 
-## Summary of findings
+## Detailed findings
 
-**1. No tradeable edge exists.** Across 184 large-cap US equities and 11 sector
-ETFs over sixteen years, a cointegration pairs strategy earns gross annualised
-alpha statistically indistinguishable from zero, and loses money net of
-realistic costs.
+**1. Bilateral cointegration pairs have no edge.** Gross annualised alpha is
+statistically indistinguishable from zero in-sample and negative on the
+hold-out.
 
 | | In-sample 2011–2021 | Hold-out 2022–2026 |
 |---|---|---|
@@ -53,6 +77,16 @@ fivefold, raises the win rate from 41.9% to 55.8%, and shrinks maximum drawdown
 from −33% to −7%. Gross alpha turns positive in both spans. It still fails the
 declared significance threshold (*t* = 0.53 in-sample, −0.41 out-of-sample) and
 **H1 was rejected.**
+
+**5. Cross-sectional PCA residual reversion is real and uneconomic.** The
+second pre-registered extension ([PREREGISTRATION_AL.md](PREREGISTRATION_AL.md))
+implements Avellaneda & Lee (2010): 15 eigenportfolio factors from a trailing
+252-day correlation matrix, OU-fitted s-scores on 60-day cumulative residuals,
+their published entry/exit thresholds, daily re-estimation, everything causal.
+Gross alpha is +1.31% in-sample with Newey-West *t* = 2.33 — the study's only
+significant span — and +0.82% out-of-sample (*t* = 0.67). Costs of ~3.2%
+annualised make both spans lose money net. **H2 rejected** on the out-of-sample
+criterion, and reported as such.
 
 ![Look-ahead bias](results/figures/02_lookahead_bias.png)
 
@@ -143,11 +177,13 @@ src/data.py               download, clean, cache adjusted closes
 src/cointegration.py      Engle-Granger, Johansen, OU half-life, FDR, Storey pi0
 src/pairs.py              rolling formation/trading cohorts and screening
 src/signals.py            z-score construction and the position state machine
-src/kalman.py             dynamic hedge ratio (pre-registered extension)
+src/kalman.py             dynamic hedge ratio (pre-registered extension 1)
+src/crosssec.py           Avellaneda-Lee PCA residual reversion (extension 2)
 src/backtest.py           P&L, costs, trade log
 src/metrics.py            Sharpe, drawdown, Newey-West t, market neutrality
-scripts/01..05            the pipeline, in order
-PREREGISTRATION.md        extension declared in advance, result reported as-is
+scripts/01..06            the pipeline, in order
+PREREGISTRATION.md        Kalman extension declared in advance, H1 rejected
+PREREGISTRATION_AL.md     cross-sectional extension, H2 rejected, reported as-is
 ```
 
 ---
@@ -176,6 +212,9 @@ Stated plainly, because a null result is only worth as much as its caveats.
 ---
 
 ## References
+
+Avellaneda, M. & Lee, J.-H. (2010). Statistical arbitrage in the US equities
+market. *Quantitative Finance*, 10(7).
 
 Chan, E. (2013). *Algorithmic Trading: Winning Strategies and Their Rationale.*
 Wiley.
