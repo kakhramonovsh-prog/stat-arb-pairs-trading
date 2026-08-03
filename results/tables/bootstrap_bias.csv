@@ -1,0 +1,8 @@
+metric,value
+gap_ann_point,0.09741733851913116
+gap_ann_ci_lo,0.07965199516827054
+gap_ann_ci_hi,0.11818506223442182
+n_boot,10000.0
+block_days,21.0
+n_days,2646.0
+seed,20260802.0

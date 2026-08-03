@@ -183,11 +183,58 @@ def fig_hedge_ratio_drift() -> None:
     plt.close(fig)
 
 
+def fig_cost_frontier() -> None:
+    """
+    Net annualised return as a function of the assumed per-side cost, for each
+    specification. Costs enter linearly, so the frontier needs no reruns: each
+    line is gross - (c / c_assumed) * costs - borrow from the saved dailies.
+    The x-intercept of each line IS that specification's breakeven cost.
+    """
+    specs = [
+        ("daily_is.csv", "Pairs, static beta", "#c0392b"),
+        ("daily_is_kalman.csv", "Pairs, Kalman beta", "#2c3e50"),
+        ("daily_is_crosssec.csv", "Cross-sectional (A&L)", "#8e44ad"),
+    ]
+    grid = np.linspace(0, 10, 101)
+
+    fig, ax = plt.subplots(figsize=(7.5, 4.2))
+    for fname, label, colour in specs:
+        path = config.TABLES / fname
+        if not path.exists():
+            continue
+        d = pd.read_csv(path, index_col=0, parse_dates=True)
+        gross = d["gross"].mean() * 252
+        costs5 = d["trade_costs"].mean() * 252     # at the assumed 5 bps/side
+        borrow = d["borrow"].mean() * 252
+        net = (gross - (grid / 5.0) * costs5 - borrow) * 100
+        ax.plot(grid, net, lw=1.5, color=colour, label=label)
+        if costs5 > 0:
+            be = 5.0 * (gross - borrow) / costs5
+            if 0 < be < 10:
+                ax.plot([be], [0], "o", color=colour, ms=5)
+                ax.annotate(f"{be:.1f} bps", (be, 0), textcoords="offset points",
+                            xytext=(4, 6), fontsize=8, color=colour)
+
+    ax.axhline(0, color="black", lw=0.8, ls="--", alpha=0.6)
+    ax.axvline(5.0, color="gray", lw=0.8, ls=":", alpha=0.8)
+    ax.text(5.05, ax.get_ylim()[0] * 0.9, "assumed in study", fontsize=7,
+            color="gray", rotation=90, va="bottom")
+    ax.set_xlabel("assumed cost per leg per side (bps)")
+    ax.set_ylabel("net annualised return (%)")
+    ax.set_title("Who can trade this? Net return vs execution cost, in-sample",
+                 fontsize=10)
+    ax.legend(frameon=False, fontsize=8)
+    fig.tight_layout()
+    fig.savefig(config.FIGURES / "05_cost_frontier.png", bbox_inches="tight")
+    plt.close(fig)
+
+
 def main() -> None:
     fig_equity_curves()
     fig_lookahead_bias()
     fig_screening_funnel()
     fig_hedge_ratio_drift()
+    fig_cost_frontier()
     made = sorted(p.name for p in config.FIGURES.glob("*.png"))
     print(f"wrote {len(made)} figures to {config.FIGURES}")
     for name in made:

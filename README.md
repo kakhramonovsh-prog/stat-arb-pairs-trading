@@ -7,12 +7,15 @@ strict formation/trading discipline with a once-only hold-out.
 
 Two headline findings:
 
-**The look-ahead error common in pairs-trading backtests is worth +6.8
-percentage points of annualised return and 3.9 Sharpe points.** Standardising
-the spread by its own trading-window moments — one line of code — turns a
-loss-making strategy into an apparent Sharpe 3.15 with an 88.8% win rate. The
-bias is isolated and measured by running the same engine with the error
-deliberately switched on.
+**The look-ahead error common in pairs-trading backtests is worth +9.7
+percentage points of annualised net return (95% CI [+8.0, +11.8]).**
+Standardising the spread by its own trading-window moments — one line of code —
+turns a loss-making strategy into an apparent Sharpe 3.15 with an 88.8% win
+rate. The bias is isolated by running the same engine on identical cohorts with
+the error deliberately switched on; the interval is a 10,000-draw moving-block
+bootstrap of the daily return difference (`scripts/07_bootstrap_bias.py`). The
+gross-signal inflation alone is +6.7pp; the rest is the cost of the extra
+trading the honest signal does.
 
 **Mean reversion still exists in US large caps; it is just smaller than the
 cost of trading it.** Each methodological refinement recovers more genuine
@@ -61,8 +64,9 @@ have not happened yet at the moment of the trade. It is a one-line change:
 | **Look-ahead z-score** | **+6.66%** | **+3.15** | **−0.9%** | **88.8%** | 348 |
 
 A Sharpe of 3.15 with a 0.9% maximum drawdown is the signature of a backtest
-that has seen the future. The bias is worth +6.8pp of annualised return and
-3.9 Sharpe points.
+that has seen the future. The net gap between the biased and honest runs is
++9.7pp annualised, 95% CI [+8.0, +11.8], from a moving-block bootstrap on
+identical cohorts.
 
 **3. Cointegration is barely distinguishable from chance.** Screening ~1,300
 within-sector pairs per formation window typically yields 45–128 pairs
