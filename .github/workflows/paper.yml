@@ -23,6 +23,7 @@ jobs:
         run: |
           pandoc paper/paper.md -o paper/paper.pdf \
             --pdf-engine=xelatex \
+            --columns=120 \
             -V mainfont="DejaVu Serif" \
             -V geometry:margin=1in \
             -V fontsize=11pt \

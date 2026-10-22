@@ -1,7 +1,7 @@
 # Anatomy of a Backtest: Look-Ahead Bias and the Economics of Statistical Arbitrage in US Large Caps, 2010–2026
 
-**Shakhrukh Kakhramonov**
-Zicklin School of Business, Baruch College
+**Shakhrukh Kakhramonov**\
+Zicklin School of Business, Baruch College\
 shakhrukh.kakhramonov87@stu-mail.baruch.cuny.edu
 
 *Working paper — August 2026*
