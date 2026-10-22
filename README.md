@@ -1,5 +1,8 @@
 # Anatomy of a Backtest: Look-Ahead Bias and the Economics of Statistical Arbitrage
 
+[![paper](https://img.shields.io/badge/paper-working%20paper%20(PDF)-blue)](paper/paper.pdf)
+[![tests](https://github.com/kakhramonovsh-prog/stat-arb-pairs-trading/actions/workflows/tests.yml/badge.svg)](https://github.com/kakhramonovsh-prog/stat-arb-pairs-trading/actions/workflows/tests.yml)
+
 Three statistical arbitrage specifications — bilateral cointegration pairs, a
 Kalman-filter dynamic hedge ratio, and Avellaneda-Lee cross-sectional PCA
 residual reversion — evaluated on 184 US large caps over 2010–2026 under a
@@ -52,7 +55,7 @@ hold-out.
 The hold-out span was run **once**, after the design was frozen. It is worse
 than in-sample, not better.
 
-**2. The bias that makes it look profitable is worth ~6.8 percentage points.**
+**2. The bias that makes it look profitable is worth +9.7 percentage points a year.**
 Standardising the spread by the mean and standard deviation of *its own trading
 window* — rather than by frozen formation-period moments — uses prices that
 have not happened yet at the moment of the trade. It is a one-line change:
@@ -151,9 +154,18 @@ Full detail in [METHODOLOGY.md](METHODOLOGY.md).
 ## Reproducing
 
 ```bash
-python -m venv venv && venv/Scripts/activate
-pip install -r requirements.txt
+python -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
+pip install -r requirements.txt pytest
 ```
+
+Run the unit tests (no market data needed):
+
+```bash
+pytest
+```
+
+Then run the pipeline in order:
 
 ```bash
 python scripts/01_fetch_data.py
@@ -196,7 +208,9 @@ src/kalman.py             dynamic hedge ratio (pre-registered extension 1)
 src/crosssec.py           Avellaneda-Lee PCA residual reversion (extension 2)
 src/backtest.py           P&L, costs, trade log
 src/metrics.py            Sharpe, drawdown, Newey-West t, market neutrality
-scripts/01..06            the pipeline, in order
+scripts/01..07            the pipeline, in order, then the bootstrap of the bias gap
+tests/                    unit tests: cointegration, Kalman filter, signals, backtest accounting
+paper/paper.md            working paper (paper.pdf is built from it in CI)
 PREREGISTRATION.md        Kalman extension declared in advance, H1 rejected
 PREREGISTRATION_AL.md     cross-sectional extension, H2 rejected, reported as-is
 ```

@@ -2,7 +2,7 @@
 
 **Shakhrukh Kakhramonov**
 Zicklin School of Business, Baruch College
-kakhramonovsh@gmail.com
+shakhrukh.kakhramonov87@stu-mail.baruch.cuny.edu
 
 *Working paper — August 2026*
 
